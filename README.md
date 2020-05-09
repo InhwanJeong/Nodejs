@@ -14,6 +14,8 @@ Nodejs practice
   - Express
   - koa
   - Hapi
+- 템플릿 엔진
+  - EJS
 - 기타
   - ReactJS
   - AngularJS
@@ -21,7 +23,8 @@ Nodejs practice
 # 목차
 - [1. 기초 간단정리](#기초-간단-정리)
   - [Non Blocking Code](#callback-function)
-  - [Event Driven](#Event-Driven)
+  - [Event Driven](#event-driven)
+- [2. Express 프레임워크 사용해보기](#express-프레임워크)
 [로그인 기능](#로그인-기능)
 [게시판 기능](#게시판-기능)
 
@@ -121,6 +124,118 @@ console.log("Program has ended");
 
 <br>
 <br>
+
+## Express 프레임워크
+- 디렉토리 구조
+```
+express_tutorial/
+├── package.json
+├── public
+│   └── css
+│       └── style.css
+├── router
+│   └── main.js
+├── server.js
+└── views
+ ├── about.html
+ └── index.html
+```
+
+- 의존 패키지 설치
+```
+$ npm install //package-lock.json 자동 생성
+```
+
+#### 서버 생성
+- server.js 파일 생성
+
+```javascript
+var express = require('express');
+var app = express();
+var server = app.listen(3000, function(){
+    console.log("Express server has started on port 3000")
+})
+```
+
+#### 라우터 정의
+- router/main.js 파일 생성
+- request에 따라 작업 처리
+
+```javascript
+// module.exports는 server.js에서 가져가 사용할 수 있도록 해준다.
+module.exports = function(app)
+{
+     app.get('/',function(req,res){
+        res.render('index.html')
+     });
+     app.get('/about',function(req,res){
+        res.render('about.html');
+    });
+}
+```
+
+#### HTML 페이지 저장
+- views 디렉토리 생성
+- index.html
+```JavaScript
+<html>
+  <head>
+    <title>Main</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+  <body>
+    Hey, this is index page
+  </body>
+</html>
+```
+- about.html
+```JavaScript
+<html>
+  <head>
+    <title>About</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+  </head>
+  <body>
+    About... what?
+  </body>
+</html>
+```
+
+#### 정적 파일 다루기
+- js 파일 또는 css, image 파일 등
+- public 디렉토리를 만든다
+- css/style.css
+
+```css
+body{
+	background-color: black;
+	color: white;
+}
+```
+
+#### 템플릿 적용 서버 수정
+```JavaScript
+var express = require('express');
+var app = express();
+var router = require('./router/main')(app);
+
+// views 파일 세팅
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+
+var server = app.listen(3000, function(){
+    console.log("Express server has started on port 3000")
+});
+
+// 정적 파일 사용
+app.use(express.static('public'));
+
+```
+
+<br>
+<br>
+
 
 ## 로그인 기능
 
