@@ -1,5 +1,5 @@
 # Nodejs
-Nodejs practice
+Nodejs practice <br>
 [nodejs 튜토리얼](https://velopert.com/node-js-tutorials)
 
 ## 관련 기술
@@ -16,6 +16,7 @@ Nodejs practice
   - Hapi
 - 템플릿 엔진
   - EJS
+  - Jade 엔진
 - 기타
   - ReactJS
   - AngularJS
@@ -25,6 +26,8 @@ Nodejs practice
   - [Non Blocking Code](#callback-function)
   - [Event Driven](#event-driven)
 - [2. Express 프레임워크 사용해보기](#express-프레임워크)
+  - [EJS 템플릿 엔진](#ejs)
+  - [RESTful API](#restful-api)
 [로그인 기능](#로그인-기능)
 [게시판 기능](#게시판-기능)
 
@@ -230,12 +233,105 @@ var server = app.listen(3000, function(){
 
 // 정적 파일 사용
 app.use(express.static('public'));
-
 ```
 
 <br>
 <br>
 
+## EJS
+- 디렉토리 구조
+```
+ejs_tutorial/
+├── data
+│   └── user.json
+├── node_modules
+├── package.json
+├── public
+│   └── css
+│       └── style.css
+├── router
+│   └── main.js
+├── server.js
+└── views
+    ├── body.ejs
+    ├── header.ejs
+    └── index.ejs
+```
+
+#### 패키지 설치
+- package.json 업데이트
+- npm install
+```
+{
+  "name": "express-tutorial",
+  "version": "1.0.0",
+  "dependencies":
+  {
+    "express": "~4.13.1",
+    "ejs": "~2.4.1"    ,
+    "body-parser": "~1.14.2",
+    "express-session": "~1.13.0"
+  }
+}
+```
+
+
+#### sever.js
+
+```JavaScript
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var fs = require("fs")
+
+// Express의 이전 버전에서는 cookie-parser 모듈도 불러와야했지만,
+// 이젠 express-session 모듈이 직접 쿠키에 접근하므로
+// cookie-parser 를 더이상 사용 할 필요가 없습니다.
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+
+
+var server = app.listen(3000, function(){
+ console.log("Express server has started on port 3000")
+});
+
+app.use(express.static('public'));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(session({
+ secret: '@#@$MYSIGN#@$#$',
+ resave: false,
+ saveUninitialized: true
+}));
+
+
+var router = require('./router/main')(app, fs);
+```
+
+#### session
+- secret – 쿠키를 임의로 변조하는것을 방지하기 위한 sign 값 입니다. 원하는 값을 넣으면 됩니다.
+- resave – 세션을 언제나 저장할 지 (변경되지 않아도) 정하는 값입니다. express-session documentation에서는 이 값을 false 로 하는것을 권장하고 필요에 따라 true로 설정합니다.
+- saveUninitialized – uninitialized 세션이란 새로 생겼지만 변경되지 않은 세션을 의미합니다. Documentation에서 이 값을 true로 설정하는것을 권장합니다.
+
+
+<br>
+<br>
+
+## RESTful API
+REST(Representational State Transfer): 하이퍼미디어 시스템 아키텍쳐, text, JSON, XML 형식으로 제공
+
+GET – 조회
+PUT –  생성 및 업데이트
+DELETE – 제거
+POST – 생성
+
+
+<br>
+<br>
 
 ## 로그인 기능
 
