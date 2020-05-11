@@ -28,8 +28,6 @@ Nodejs practice <br>
 - [2. Express 프레임워크 사용해보기](#express-프레임워크)
   - [EJS 템플릿 엔진](#ejs)
   - [RESTful API](#restful-api)
-[로그인 기능](#로그인-기능)
-[게시판 기능](#게시판-기능)
 
 ---
 
@@ -318,6 +316,44 @@ var router = require('./router/main')(app, fs);
 - saveUninitialized – uninitialized 세션이란 새로 생겼지만 변경되지 않은 세션을 의미합니다. Documentation에서 이 값을 true로 설정하는것을 권장합니다.
 
 
+#### EJS 파일 분할하기
+- 파일 불러오기: <% include FILENAME %>
+- index.ejs
+```JavaScript
+<html>
+  <head>
+    <% include ./header.ejs %>
+  </head>
+  <body>
+    <% include ./body.ejs %>
+  </body>
+</html>
+```
+
+- header.ejs
+```JavaScript
+<title>
+     <%= title %>
+ </title>
+ <link rel="stylesheet" type="text/css" href="css/style.css">
+ <script>
+    console.log("HelloWorld");
+ </script>
+```
+
+- body.ejs
+```JavaScript
+<h1>Loop it!</h1>
+<ul>
+    <% for(var i=0; i<length; i++){ %>
+        <li>
+            <%= "LOOP" + i %>
+        </li>
+    <% } %>
+</ul>
+```
+
+
 <br>
 <br>
 
@@ -329,11 +365,24 @@ PUT –  생성 및 업데이트
 DELETE – 제거
 POST – 생성
 
+- user.json
+
+```json
+{
+    "first_user": {
+        "password": "first_pass",
+        "name": "abet"
+    },
+    "second_user":{
+        "password": "second_pass",
+        "name": "betty"
+    }
+}
+```
+
 
 <br>
 <br>
-
-## 로그인 기능
 
 ## 게시판 기능
 - sequelize
